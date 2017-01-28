@@ -51,7 +51,7 @@ function setup() {
     window.mainCanvas = createCanvas(canvasX, canvasY);
     window.mainCanvas.parent('mainCanvas');
     window.mainCtx = window.mainCanvas.canvas.getContext('2d');
-    window.mainCtx.classList.add('noPrint');
+
 
     //background(0);
     // This is by default
@@ -117,7 +117,7 @@ function setup() {
     grid(gridSize);
     createGridPoints(gridSize);
     window.gridCells = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
-
+    window.mainCtx.classList.add('noPrint');
     //set default tile
     //window.setDefault();
 }
