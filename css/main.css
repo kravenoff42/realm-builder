@@ -1,0 +1,56 @@
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#mapMkrCol{
+  background-color: #aaa;
+}
+.mapMkrColItem{
+    margin: 10px;
+}
+
+#mapMkrSelImgPnl{
+    height: 96px;
+}
+
+.hoverPointer:hover{
+    cursor: pointer;
+}
+
+.mapMkrHide{
+display: none;
+}
+
+.mapMkrShow{
+    display: block;
+}
+
+#mapMkrSelBtns{
+
+    float:right;
+}
+
+#mapMkrSelImg{
+    float:left;
+    margin:20px;
+}
+
+
+#mapMkrBtnHand{
+    width:60%;
+}
+
+#mapMkrBtnDel{
+    margin-right: 0px;
+}
+
+i.material-icons{
+  font-size: 12pt;
+}
+.hide{
+  visibility: hidden;
+}
+body *:not(.print) {
+  display: none;
+}
