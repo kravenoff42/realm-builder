@@ -497,9 +497,37 @@ function gridTreeReset() {
 }
 
 function printCanvas(){
-  window.print();
+  var gridVis = document.querySelector("#GridVisOn");
+    if (gridVis.classList.contains("hide")){
+      window.print();
+    }
+    else {
+      GRID_LINE_W = 0;
+      createGridPoints(gridSize);
+      window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+      window.gridCells.updateCellsCords(gridX);
+      window.print();
+      GRID_LINE_W = 2;
+      createGridPoints(gridSize);
+      window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+      window.gridCells.updateCellsCords(gridX);
+    }
 }
 
 function saveCanvas(){
-  save();
+  var gridVis = document.querySelector("#GridVisOn");
+    if (gridVis.classList.contains("hide")){
+      save();
+    }
+    else {
+    GRID_LINE_W = 0;
+    createGridPoints(gridSize);
+    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+    window.gridCells.updateCellsCords(gridX);
+    save();
+    GRID_LINE_W = 2;
+    createGridPoints(gridSize);
+    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+    window.gridCells.updateCellsCords(gridX);
+  }
 }
