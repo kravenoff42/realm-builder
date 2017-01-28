@@ -87,7 +87,11 @@ function setup() {
         visBtns[i].addEventListener('click',
             toggleVis);
     }
+    var printBtn = document.querySelector('#printBtn');
+    printBtn.addEventListener('click', printCanvas);
 
+    var saveBtn = document.querySelector('#saveBtn');
+    saveBtn.addEventListener('click', saveCanvas);
 
     window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
@@ -488,4 +492,12 @@ function updateCells() {
 function gridTreeReset() {
     window.gridTree.clear();
     window.gridTree.insert(window.gridPointsArr);
+}
+
+function printCanvas(){
+  window.print();
+}
+
+function saveCanvas(){
+  save();
 }
