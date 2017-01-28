@@ -51,7 +51,6 @@ function setup() {
     window.mainCanvas = createCanvas(canvasX, canvasY);
     window.mainCanvas.parent('mainCanvas');
     window.mainCtx = window.mainCanvas.canvas.getContext('2d');
-    window.mainCtx.classList.add("noPrint")
     background(0);
     // This is by default
     frameRate(60);
@@ -65,7 +64,7 @@ function setup() {
     deleteBtn = document.querySelector('#mapMkrBtnDel');
 
     //
-    // Disabling the delete and rotate buttons 
+    // Disabling the delete and rotate buttons
     //
     rotateBtn.disabled = true;
     deleteBtn.disabled = true;
@@ -311,7 +310,7 @@ function grid(size) {
 
 
 /**
- * 
+ *
  * Creating an array of Grid Points based on top left
  * @function createGridPoints
  */
