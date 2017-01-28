@@ -51,6 +51,8 @@ i.material-icons{
 .hide{
   visibility: hidden;
 }
-body *:not(.print) {
-  display: none;
+@media print {
+  body *:not(.print) {
+    display: none;
+  }
 }
