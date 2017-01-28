@@ -113,11 +113,12 @@ function setup() {
     //
     window.gridGraph = createGraphics(window.mainCanvas.width, window.mainCanvas.height);
 
-
     grid(gridSize);
     createGridPoints(gridSize);
-    window.gridCells = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
-    window.mainCtx.classList.add('noPrint');
+    window.gridCanvas = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
+
+
+    //window.mainCtx.classList.add('noPrint');
     //set default tile
     //window.setDefault();
 }
