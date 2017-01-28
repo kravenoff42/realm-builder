@@ -52,7 +52,7 @@ i.material-icons{
   visibility: hidden;
 }
 @media print {
-  body *:not(.print) {
+  .noPrint {
     display: none;
   }
 }

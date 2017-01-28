@@ -51,7 +51,9 @@ function setup() {
     window.mainCanvas = createCanvas(canvasX, canvasY);
     window.mainCanvas.parent('mainCanvas');
     window.mainCtx = window.mainCanvas.canvas.getContext('2d');
-    background(0);
+    window.mainCtx.classList.add('noPrint');
+
+    //background(0);
     // This is by default
     frameRate(60);
     // Setting the pixel density to one for now so it can be the same across devices
