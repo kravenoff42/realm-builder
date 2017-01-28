@@ -115,10 +115,10 @@ function setup() {
 
     grid(gridSize);
     createGridPoints(gridSize);
-    window.gridCanvas = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
+    window.gridCells = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
 
 
-    //window.mainCtx.classList.add('noPrint');
+    window.gridCanvas.classList.add('noPrint');
     //set default tile
     //window.setDefault();
 }
