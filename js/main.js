@@ -113,11 +113,8 @@ function setup() {
     grid(gridSize);
     createGridPoints(gridSize);
     window.gridCells = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
-
-
-    window.gridCanvas.classList.add('noPrint');
     //set default tile
-    //window.setDefault();
+    window.setDefault();
 }
 
 
@@ -198,7 +195,7 @@ function buildCollByLayer(layer) {
             var tempLblEle = document.createElement('h5');
             //tempLblEle.classList.add('card-title');
             var lblText = imgData.coll[x].name;
-            console.log(lblText);
+            //console.log(lblText);
             tempLblEle.innerHTML = lblText;
             //insert img and label into div
             tempCardEle.appendChild(tempImgEle);
@@ -235,8 +232,10 @@ function collItemSelected() {
 }
 
 function setDefault() {
-    window.gridGraph.resizeCanvas(SIZE_PX * 2, SIZE_PX * 2);
+  buildCollByLayer(0);
 
+    window.gridGraph.resizeCanvas(SIZE_PX * 2, SIZE_PX * 2);
+    window.currentSelectImg = 0;
     var selectImg = imgData.coll[0];
     window.gridGraph.image(window.imgArr[selectImg.src],
         0, 0,
@@ -303,7 +302,7 @@ function grid(size) {
         cord.x += (GRID_LINE_W / 2);
         window.gridGraph.push();
         window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(128);
+        window.gridGraph.stroke('#bfdbf7');
         window.gridGraph.line(0, cord.x, width, cord.x);
         window.gridGraph.pop();
         cord.x += SIZE_PX + (GRID_LINE_W / 2);
@@ -316,7 +315,7 @@ function grid(size) {
         cord.y += (GRID_LINE_W / 2);
         window.gridGraph.push();
         window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(128);
+        window.gridGraph.stroke('#bfdbf7s');
         window.gridGraph.line(cord.y, 0, cord.y, height);
         window.gridGraph.pop();
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
