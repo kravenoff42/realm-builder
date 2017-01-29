@@ -18,7 +18,7 @@ canvas {
     cursor: pointer;
 }
 .mapMkrTbBtn{
-  min-width: 80%;
+  min-width: 75%;
 }
 .mapMkrHide{
 display: none;
