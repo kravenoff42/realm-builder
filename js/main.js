@@ -21,15 +21,15 @@ var selectedImg;
 var rotateBtn;
 var deleteBtn;
 var handTool = false;
-var gridSize = 16;
-const SIZE_PX = 32;
+
+const SIZE_PX = 64;
 var GRID_LINE_W = 2;
-var gridX = 16;
-var gridY = 16;
+var gridX = 15;
+var gridY = 10;
 var gridSize = { x: gridX, y: gridY };
 var gridVis = true;
-var cellSize = 32;
-var cellBorderSize = 2;
+var cellSize = SIZE_PX;
+var cellBorderSize = GRID_LINE_W;
 var canvasX = (gridX * cellSize) + (cellBorderSize * (gridX + 1))
 var canvasY = (gridY * cellSize) + (cellBorderSize * (gridY + 1))
 
@@ -51,9 +51,6 @@ function setup() {
     window.mainCanvas = createCanvas(canvasX, canvasY);
     window.mainCanvas.parent('mainCanvas');
     window.mainCtx = window.mainCanvas.canvas.getContext('2d');
-
-
-    //background(0);
     // This is by default
     frameRate(60);
     // Setting the pixel density to one for now so it can be the same across devices
@@ -173,29 +170,43 @@ function buildCollByLayer(layer) {
     window.gridGraph.resizeCanvas(SIZE_PX, SIZE_PX);
     for (var x = 0; x < imgData.coll.length; x++) {
         if (imgData.coll[x].layer === layer) {
+          //cretae div
+          var tempDivEle = document.createElement('div');
+          tempDivEle.classList.add('tile-item');
+          tempDivEle.classList.add('col-md-2');
+
+            var tempCardEle = document.createElement('div');
+            tempCardEle.classList.add('item-inner');
+            //create img
             var tempImgEle = document.createElement('img');
+            //tempImgEle.classList.add('card-img-top');
             tempImgEle.classList.add('mapMkrColItem');
             tempImgEle.height = SIZE_PX;
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
             tempImgEle.setAttribute('title', imgData.coll[x].name);
-
-            //
-            // Setting the selected image index
-            // and displaying the current selected image
-            //
-            // This has grown since and should be in a function
-            //
-            tempImgEle.addEventListener('click', collItemSelected);
-
-
+            //insert img src
             window.gridGraph.image(window.imgArr[imgData.coll[x].src],
                 0, 0,
                 SIZE_PX, SIZE_PX,
                 imgData.coll[x].x, imgData.coll[x].y,
                 imgData.coll[x].width, imgData.coll[x].height);
             tempImgEle.src = window.gridGraph.elt.toDataURL();
-            collectionArea.appendChild(tempImgEle);
+            //add event
+            tempImgEle.addEventListener('click', collItemSelected);
+            //create label
+            var tempLblEle = document.createElement('h5');
+            //tempLblEle.classList.add('card-title');
+            var lblText = imgData.coll[x].name;
+            console.log(lblText);
+            tempLblEle.innerHTML = lblText;
+            //insert img and label into div
+            tempCardEle.appendChild(tempImgEle);
+            tempCardEle.appendChild(tempLblEle);
+            tempDivEle.appendChild(tempCardEle);
+
+            //add each div to collection
+            collectionArea.appendChild(tempDivEle);
             window.gridGraph.clear();
         }
     }
@@ -292,7 +303,7 @@ function grid(size) {
         cord.x += (GRID_LINE_W / 2);
         window.gridGraph.push();
         window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(56);
+        window.gridGraph.stroke(128);
         window.gridGraph.line(0, cord.x, width, cord.x);
         window.gridGraph.pop();
         cord.x += SIZE_PX + (GRID_LINE_W / 2);
@@ -305,7 +316,7 @@ function grid(size) {
         cord.y += (GRID_LINE_W / 2);
         window.gridGraph.push();
         window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(56);
+        window.gridGraph.stroke(128);
         window.gridGraph.line(cord.y, 0, cord.y, height);
         window.gridGraph.pop();
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
