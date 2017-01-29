@@ -90,10 +90,10 @@ function setup() {
             toggleVis);
     }
     var printBtn = document.querySelector('#printBtn');
-    printBtn.addEventListener('click', printCanvas);
+    printBtn.addEventListener('click', printMap, false);
 
     var saveBtn = document.querySelector('#saveBtn');
-    saveBtn.addEventListener('click', saveCanvas);
+    saveBtn.addEventListener('click', saveMap, false);
 
     window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
@@ -497,8 +497,9 @@ function gridTreeReset() {
     window.gridTree.insert(window.gridPointsArr);
 }
 
-function printCanvas(){
-  var gridVis = document.querySelector("#GridVisOn");
+function printMap(){
+  var gridVis = document.querySelector("#GrdVisOn");
+  //console.log(gridVis);
     if (gridVis.classList.contains("hide")){
       window.print();
     }
@@ -513,22 +514,24 @@ function printCanvas(){
       window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
       window.gridCells.updateCellsCords(gridX);
     }
+    return false;
 }
 
-function saveCanvas(){
-  var gridVis = document.querySelector("#GridVisOn");
+function saveMap(){
+  var gridVis = document.querySelector("#GrdVisOn");
     if (gridVis.classList.contains("hide")){
-      save();
+      save(window.mainCanvas, 'myMap.jpg');
     }
     else {
     GRID_LINE_W = 0;
     createGridPoints(gridSize);
     window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
     window.gridCells.updateCellsCords(gridX);
-    save();
+    save(window.mainCanvas, 'myMap.jpg');
     GRID_LINE_W = 2;
     createGridPoints(gridSize);
     window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
     window.gridCells.updateCellsCords(gridX);
   }
+  return false;
 }
