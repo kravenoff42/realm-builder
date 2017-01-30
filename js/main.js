@@ -24,8 +24,8 @@ var handTool = false;
 
 const SIZE_PX = 64;
 var GRID_LINE_W = 2;
-var gridX = 15;
-var gridY = 10;
+var gridX = 12;
+var gridY = 8;
 var gridSize = { x: gridX, y: gridY };
 var gridVis = true;
 var cellSize = SIZE_PX;
@@ -315,7 +315,7 @@ function grid(size) {
         cord.y += (GRID_LINE_W / 2);
         window.gridGraph.push();
         window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke('#bfdbf7s');
+        window.gridGraph.stroke('#bfdbf7');
         window.gridGraph.line(cord.y, 0, cord.y, height);
         window.gridGraph.pop();
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
