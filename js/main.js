@@ -171,7 +171,7 @@ function buildCollByLayer(layer) {
           var tempDivEle = document.createElement('div');
           tempDivEle.classList.add('tile-item');
           tempDivEle.classList.add('col-md-2');
-
+            //create inner div
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');
             //create img
@@ -215,8 +215,6 @@ function collItemSelected() {
     document.querySelector('#mainCanvas').classList.remove('hoverPointer');
     rotateBtn.disabled = true;
     deleteBtn.disabled = true;
-    //deleteBtn.classList.add('mapMkrHide');
-    //window.gridGraph.resizeCanvas(SIZE_PX, SIZE_PX);
     window.gridGraph.resizeCanvas(SIZE_PX * 2, SIZE_PX * 2);
     window.currentSelectImg = this.id.split('-')[1];
     var selectImg = imgData.coll[window.currentSelectImg];
@@ -225,7 +223,7 @@ function collItemSelected() {
         SIZE_PX * 2, SIZE_PX * 2,
         selectImg.x, selectImg.y,
         selectImg.width, selectImg.height);
-    //64, 64);
+
     selectedImg.src = window.gridGraph.elt.toDataURL();
     window.gridGraph.clear();
     window.gridGraph.resizeCanvas(window.mainCanvas.width, window.mainCanvas.height);
@@ -294,35 +292,36 @@ function render() {
  */
 
 function grid(size) {
+    //decalre cord
     var cord = { x: 0, y: 0 };
-    //
-    // Draw horizontal lines as we go down the screen
-    //
+    //set up context
     window.gridGraph.push();
+    //set color and weight
+    window.gridGraph.strokeWeight(GRID_LINE_W);
+    window.gridGraph.stroke('#bfdbf7');
+    // Draw horizontal lines as we go down the screen
     for (var y = 0; y < size.y + 1; y++) {
+        //start just inside canvas
         cord.x += (GRID_LINE_W / 2);
-        
-        window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke('#bfdbf7');
+        //draw line
         window.gridGraph.line(0, cord.x, width, cord.x);
-        //window.gridGraph.pop();
+        //step over one cell
         cord.x += SIZE_PX + (GRID_LINE_W / 2);
     }
-
-    //
     // Draw vertical lines as we go right the screen
-    //
     for (var x = 0; x < size.x + 1; x++) {
+        //start just inside canvas
         cord.y += (GRID_LINE_W / 2);
-       // window.gridGraph.push();
-        //window.gridGraph.strokeWeight(GRID_LINE_W);
-       // window.gridGraph.stroke('#bfdbf7');
+        //draw line
         window.gridGraph.line(cord.y, 0, cord.y, height);
-        
+        //step over one cell
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
     }
+    //end context for grid
     window.gridGraph.pop();
+    //drop grid into second canvas
     window.gridCtx.drawImage(window.gridGraph.elt, 0, 0);
+    //clear buffer graphics
     window.gridGraph.clear();
 }
 
