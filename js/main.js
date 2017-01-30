@@ -508,23 +508,8 @@ function gridTreeReset() {
 }
 
 function printMap(){
-  var gridVis = document.querySelector("#GrdVisOn");
-  //console.log(gridVis);
-    if (gridVis.classList.contains("hide")){
-      window.print();
-    }
-    else {
-      GRID_LINE_W = 0;
-      createGridPoints(gridSize);
-      window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
-      window.gridCells.updateCellsCords(gridX);
-      window.print();
-      GRID_LINE_W = 2;
-      createGridPoints(gridSize);
-      window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
-      window.gridCells.updateCellsCords(gridX);
-    }
-    return false;
+  window.print();
+  return false;
 }
 
 function saveMap(){
