@@ -6,6 +6,7 @@ Gunmetal - #1d1e2c*/
 
 body{
   background-color: #1d1e2c;
+  
 }
 
 canvas {
@@ -22,6 +23,7 @@ canvas {
 }
 .mapMkrColItem{
     margin: 10px;
+    cursor: pointer;
 }
 .mapMkrTbBtn{
   display: block;

@@ -9,6 +9,7 @@ var gridTree;
 var currentCell = null;
 var currentSelectImg = null;
 var drawing = false;
+var erasing = false;
 var pixelArr;
 
 var gridCells;
@@ -91,6 +92,9 @@ function setup() {
 
     var saveBtn = document.querySelector('#saveBtn');
     saveBtn.addEventListener('click', saveMap, false);
+
+    var eraseBtn = document.querySelector('#mapMkrBtnErs');
+    eraseBtn.addEventListener('click', selectEraser);
 
     window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
@@ -502,6 +506,23 @@ function updateCells() {
         }
     }
 }
+
+function eraseCells() {
+    var cord = { x: 0, y: 0 };
+    cord.x = window.mouseX;
+    cord.y = window.mouseY;
+    cord.width = 2;
+    cord.height = 2;
+    window.gridTree.insert(cord);
+    findCell(cord);
+    gridTreeReset();
+    if (window.gridCells.currentCell !== null) {
+        if (window.currentSelectImg !== null) {
+            window.gridCells.deleteCellImageByLayer();
+        }
+    }
+}
+
 function gridTreeReset() {
     window.gridTree.clear();
     window.gridTree.insert(window.gridPointsArr);
@@ -529,4 +550,15 @@ function saveMap(){
     window.gridCells.updateCellsCords(gridX);
   }
   return false;
+}
+
+function selectEraser(){
+  if(!erasing){
+    document.body.style.cursor = 'crosshair';
+    erasing = true;
+  } else {
+    document.body.style.cursor = 'auto';
+    erasing = false;
+  }
+
 }
