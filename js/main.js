@@ -298,13 +298,14 @@ function grid(size) {
     //
     // Draw horizontal lines as we go down the screen
     //
+    window.gridGraph.push();
     for (var y = 0; y < size.y + 1; y++) {
         cord.x += (GRID_LINE_W / 2);
-        window.gridGraph.push();
+        
         window.gridGraph.strokeWeight(GRID_LINE_W);
         window.gridGraph.stroke('#bfdbf7');
         window.gridGraph.line(0, cord.x, width, cord.x);
-        window.gridGraph.pop();
+        //window.gridGraph.pop();
         cord.x += SIZE_PX + (GRID_LINE_W / 2);
     }
 
@@ -313,14 +314,14 @@ function grid(size) {
     //
     for (var x = 0; x < size.x + 1; x++) {
         cord.y += (GRID_LINE_W / 2);
-        window.gridGraph.push();
-        window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke('#bfdbf7');
+       // window.gridGraph.push();
+        //window.gridGraph.strokeWeight(GRID_LINE_W);
+       // window.gridGraph.stroke('#bfdbf7');
         window.gridGraph.line(cord.y, 0, cord.y, height);
-        window.gridGraph.pop();
+        
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
     }
-
+    window.gridGraph.pop();
     window.gridCtx.drawImage(window.gridGraph.elt, 0, 0);
     window.gridGraph.clear();
 }
