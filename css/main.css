@@ -25,6 +25,7 @@ canvas {
 }
 .mapMkrTbBtn{
   display: block;
+  min-width: 100px;
 }
 #mapMkrSelImg{
     height: 128px;
