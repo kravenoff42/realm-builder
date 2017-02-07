@@ -24,14 +24,14 @@ var deleteBtn;
 var dimOverlay;
 var handTool = false;
 var gridSize = 16;
-const SIZE_PX = 32;
+const SIZE_PX = 64;
 var GRID_LINE_W = 2;
-var gridX = 16;
-var gridY = 16;
+var gridX = 15;
+var gridY = 10;
 var gridSize = { x: gridX, y: gridY };
 var gridVis = true;
-var cellSize = 32;
-var cellBorderSize = 2;
+var cellSize = SIZE_PX;
+var cellBorderSize = GRID_LINE_W;
 var canvasX = (gridX * cellSize) + (cellBorderSize * (gridX + 1));
 var canvasY = (gridY * cellSize) + (cellBorderSize * (gridY + 1));
 
@@ -48,7 +48,7 @@ var mouseClicks = 0;
  * @function preload
  */
 function preload() {
-    window.imgArr['main'] = loadImage("img/stage01.png");
+    window.imgArr['main'] = loadImage("img/stage00.png");
 }
 
 
@@ -75,7 +75,6 @@ function setup() {
     window.mainCanvas.elt.addEventListener('mousedown', canvasClicked);
     window.mainCanvas.elt.addEventListener('mouseup', canvasMouseReleased);
 
-    background(0);
     // This is by default
     frameRate(60);
     // Setting the pixel density to one for now so it can be the same across devices
@@ -87,23 +86,17 @@ function setup() {
     rotateBtn = document.querySelector('#mapMkrBtnRotate');
     deleteBtn = document.querySelector('#mapMkrBtnDel');
 
-    //
-    // Disabling the delete and rotate buttons 
-    //
+    // Disabling the delete and rotate buttons
+
     rotateBtn.disabled = true;
     deleteBtn.disabled = true;
 
-
-    //
     // Setting up the click events for the rotate and delete button
-    //
+
     rotateBtn.addEventListener('click', rotateCellImage);
     deleteBtn.addEventListener('click', deleteCellImage);
 
-
-    //
     // Adding click events for the toolbox and visibility buttons
-    //
 
     var toolBxBtns = document.querySelectorAll('.mapMkrTbBtn');
 
@@ -119,12 +112,19 @@ function setup() {
             toggleVis);
     }
 
+    var printBtn = document.querySelector('#printBtn');
+    printBtn.addEventListener('click', printMap, false);
+
+    var saveBtn = document.querySelector('#saveBtn');
+    saveBtn.addEventListener('click', saveMap, false);
+
+    var eraseBtn = document.querySelector('#mapMkrBtnErs');
+    eraseBtn.addEventListener('click', selectEraser);
 
     window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
-    //
-    // This is the Grid Canvas that will sit on top
-    //
+        // This is the Grid Canvas that will sit on top
+
     window.gridCanvas = document.createElement('canvas');
     window.gridCanvas.id = 'gridCanvas';
     window.gridCanvas.height = window.mainCanvas.height;
@@ -137,7 +137,7 @@ function setup() {
     // In this case using pure js but it could be changed to use p5.js
     // Adding the click events to both canvas because when the grid one is on top
     // if will have the focus and when hidden the mainCanvas will have the focus.
-    //    
+    //
     window.gridCanvas.addEventListener('mousedown', canvasClicked);
     window.gridCanvas.addEventListener('mouseup', canvasMouseReleased);
 
@@ -154,9 +154,8 @@ function setup() {
     grid(gridSize);
     createGridPoints(gridSize);
     window.gridCells = new CellsObj(gridSize, SIZE_PX, GRID_LINE_W);
-
-    //
-    //
+    //set default tile
+    window.setDefault();
     //
     window.cellImagesWrap = document.querySelector('#mapMkrCellImages');
 
@@ -218,32 +217,63 @@ function buildCollByLayer(layer) {
     window.gridGraph.resizeCanvas(SIZE_PX, SIZE_PX);
     for (var x = 0; x < imgData.coll.length; x++) {
         if (imgData.coll[x].layer === layer) {
+          //cretae div
+          var tempDivEle = document.createElement('div');
+          tempDivEle.classList.add('tile-item');
+          tempDivEle.classList.add('col-md-2');
+
+            var tempCardEle = document.createElement('div');
+            tempCardEle.classList.add('item-inner');
+            //create img
             var tempImgEle = document.createElement('img');
+            //tempImgEle.classList.add('card-img-top');
             tempImgEle.classList.add('mapMkrColItem');
             tempImgEle.height = SIZE_PX;
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
             tempImgEle.setAttribute('title', imgData.coll[x].name);
-
-            //
-            // Setting the selected image index
-            // and displaying the current selected image
-            //
-            // This has grown since and should be in a function
-            //
-            tempImgEle.addEventListener('click', collItemSelected);
-
-
+            //insert img src
             window.gridGraph.image(window.imgArr[imgData.coll[x].src],
                 0, 0,
                 SIZE_PX, SIZE_PX,
                 imgData.coll[x].x, imgData.coll[x].y,
                 imgData.coll[x].width, imgData.coll[x].height);
             tempImgEle.src = window.gridGraph.elt.toDataURL();
-            collectionArea.appendChild(tempImgEle);
+            //add event
+            tempImgEle.addEventListener('click', collItemSelected);
+            //create label
+            var tempLblEle = document.createElement('h5');
+            //tempLblEle.classList.add('card-title');
+            var lblText = imgData.coll[x].name;
+            //console.log(lblText);
+            tempLblEle.innerHTML = lblText;
+            //insert img and label into div
+            tempCardEle.appendChild(tempImgEle);
+            tempCardEle.appendChild(tempLblEle);
+            tempDivEle.appendChild(tempCardEle);
+
+            //add each div to collection
+            collectionArea.appendChild(tempDivEle);
             window.gridGraph.clear();
         }
     }
+    window.gridGraph.resizeCanvas(window.mainCanvas.width, window.mainCanvas.height);
+}
+
+function setDefault() {
+  buildCollByLayer(0);
+
+    window.gridGraph.resizeCanvas(SIZE_PX * 2, SIZE_PX * 2);
+    window.currentSelectImg = 0;
+    var selectImg = imgData.coll[0];
+    window.gridGraph.image(window.imgArr[selectImg.src],
+        0, 0,
+        SIZE_PX * 2, SIZE_PX * 2,
+        selectImg.x, selectImg.y,
+        selectImg.width, selectImg.height);
+    //64, 64);
+    selectedImg.src = window.gridGraph.elt.toDataURL();
+    window.gridGraph.clear();
     window.gridGraph.resizeCanvas(window.mainCanvas.width, window.mainCanvas.height);
 }
 
@@ -321,37 +351,25 @@ function grid(size) {
     var cord = { x: 0, y: 0 };
     //
     // Draw horizontal lines as we go down the screen
-    //
+    push();
+    window.gridGraph.stroke('#bfdbf7');
+    window.gridGraph.strokeWeight(GRID_LINE_W);
     for (var y = 0; y < size.y + 1; y++) {
         cord.x += (GRID_LINE_W / 2);
-        window.gridGraph.push();
-        window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(56);
         window.gridGraph.line(0, cord.x, width, cord.x);
-        window.gridGraph.pop();
         cord.x += SIZE_PX + (GRID_LINE_W / 2);
     }
-
-    //
     // Draw vertical lines as we go right the screen
-    //
     for (var x = 0; x < size.x + 1; x++) {
         cord.y += (GRID_LINE_W / 2);
-        window.gridGraph.push();
-        window.gridGraph.strokeWeight(GRID_LINE_W);
-        window.gridGraph.stroke(56);
         window.gridGraph.line(cord.y, 0, cord.y, height);
-        window.gridGraph.pop();
         cord.y += SIZE_PX + (GRID_LINE_W / 2);
     }
-
+    pop();
     window.gridCtx.drawImage(window.gridGraph.elt, 0, 0);
     window.gridGraph.clear();
 }
-
-
 /**
- * 
  * Creating an array of Grid Points based on top left
  * @function createGridPoints
  */
@@ -394,12 +412,40 @@ function mousePressed() {
         cord.x > 0 &&
         cord.y < 0 + height &&
         cord.y > 0) {
+
+/******************************************************************************
+Hey whats up with this? should there be something here?
+
+this is what I have in my copy.\
+
+window.gridTree.insert(cord);
+findCell(cord);
+console.log("pressed");
+//gridTreeReset();
+if (window.gridCells.currentCell !== null) {
+
+    if (window.handTool) {
+        window.gridCells.findImgByCord(cord);
+        if (window.gridCells.currentLayer !== null) {
+            cellItemSelected();
+        } else {
+            rotateBtn.disabled = true;
+            deleteBtn.disabled = true;
+        }
+    }
+    else if (window.currentSelectImg !== null) {
+        if(!erasing){drawing = true;}
+        var selectImg = imgData.coll[window.currentSelectImg];
+        window.gridCells.updateCurrentCellImg(selectImg);
+    }
+}
+******************************************************************************/
     }
 }
 
 
-/** 
- * 
+/**
+ *
 */
 function canvasClicked(e) {
     //
@@ -452,13 +498,11 @@ function dvDouble() {
     console.log('double');
 }
 
-/**
- * Called when the mouse is released - p5.js function
- * Leaving it here for now in case we need it for something else
- * @function mouseReleased
- */
 function mouseReleased() {
-
+/*
+drawing = false;
+gridTreeReset();
+*/
 }
 
 function canvasMouseReleased() {
@@ -474,7 +518,7 @@ function findCell(cord) {
 
     var cnt = 0;
 
-    console.log('here: ' + cells.length);
+    // console.log('here: ' + cells.length);
     for (var x = 0, len = cells.length; x < len; x++) {
         //console.log('looking');
         var cell = cells[x];
@@ -489,7 +533,7 @@ function findCell(cord) {
             cord.y < cell.y + cell.height &&
             cord.y > cell.y) {
             window.gridCells.currentCell = window.gridPointsArr.indexOf(cell);
-            console.log('found');
+            // console.log('found');
             return true;
         }
 
@@ -539,11 +583,7 @@ function toggleVis() {
             window.gridCells.setLayerVis(layer, false);
         }
     }
-
-
 }
-
-
 /**
  * Updating the layer of the cells as the user is clicking/holding
  * @function updateCells
@@ -564,7 +604,22 @@ function updateCells() {
         }
     }
 }
-
+function eraseCells() {
+    var cord = { x: 0, y: 0 };
+    cord.x = window.mouseX;
+    cord.y = window.mouseY;
+    cord.width = 2;
+    cord.height = 2;
+    window.gridTree.insert(cord);
+    findCell(cord);
+    gridTreeReset();
+    if (window.gridCells.currentCell !== null) {
+        if (window.currentSelectImg !== null) {
+          //console.log(cord);
+            window.gridCells.deleteCellImageByLayer();
+        }
+    }
+}
 /**
  * Display Images of the Selected Cell
  * @function displaySelectedCellImages
@@ -575,11 +630,6 @@ function displaySelectedCellImages() {
     cord.y = window.mouseY;
     cord.width = 2;
     cord.height = 2;
-    //console.log(cord);
-
-
-    //window.currentSelectImg = null;
-
     //
     // Making sure we are within the canvas
     //
@@ -603,7 +653,7 @@ function displaySelectedCellImages() {
             if (tempImgArr = window.gridCells.returnLayerImgArr()) {
                 //
                 // Setting drawing to false to prevent future clicks to draw on the canvas
-                // When clicking on the displayed cell images 
+                // When clicking on the displayed cell images
                 //
                 drawing = false;
 
@@ -636,13 +686,13 @@ function displaySelectedCellImages() {
                         document.querySelector('#mapMkrCellImagesContent').innerHTML = '';
 
                         //
-                        // 
+                        //
                         // This is where I'm planning on building the rotate tool
                         //
                         push();
                         var currentCell = window.gridCells.getCurrentCell();
                         translate(currentCell.x, currentCell.y);
-                        //var topLeft =    
+                        //var topLeft =
 
                         pop();
 
@@ -682,3 +732,37 @@ function gridTreeReset() {
     window.gridTree.insert(window.gridPointsArr);
 }
 
+function printMap(){
+  window.print();
+  return false;
+}
+
+function saveMap(){
+  var gridVis = document.querySelector("#GrdVisOn");
+    if (gridVis.classList.contains("hide")){
+      save(window.mainCanvas, 'myMap.jpg');
+    }
+    else {
+    GRID_LINE_W = 0;
+    createGridPoints(gridSize);
+    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+    window.gridCells.updateCellsCords(gridX);
+    save(window.mainCanvas, 'myMap.jpg');
+    GRID_LINE_W = 2;
+    createGridPoints(gridSize);
+    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+    window.gridCells.updateCellsCords(gridX);
+  }
+  return false;
+}
+
+function selectEraser(){
+  if(!erasing){
+    document.body.style.cursor = 'crosshair';
+    erasing = true;
+    drawing = false;
+  } else {
+    document.body.style.cursor = 'auto';
+    erasing = false;
+  }
+}
