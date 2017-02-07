@@ -19,7 +19,7 @@ and open the template in the editor.
 
 <body>
   <div class="container">
-    <!--  Logo and Name-->
+  <!--    Logo and Name-->
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -55,10 +55,10 @@ and open the template in the editor.
       <!--/.container-fluid -->
     </nav>
 
-    <div class="row">
+    <div class="row noPrint">
 
       <!-- Current Selected image -->
-      <div class="col-lg-3">
+      <div class="col-lg-2">
         <div id="mapMkrSelImgPnl">
           <img id="mapMkrSelImg">
 
@@ -66,7 +66,7 @@ and open the template in the editor.
       </div>
 
       <!-- Collection -->
-      <div class="col-lg-8">
+      <div class="col-lg-9">
         <div id="mapMkrCol">
 
         </div>
@@ -78,55 +78,51 @@ and open the template in the editor.
 
     <div class="row">
       <!-- Toolbox-->
-      <div class="col-lg-3 mapMkrToolBox">
-
-
+      <div class="col-lg-2 mapMkrToolBox noPrint">
         <div class="row" id="mapMkrHand">
-          <button id="mapMkrBtnHand" class="col-sm-9 btn btn-primary mapMkrTbBtn" type="button" name="Select">Select</button>
-          <button class="btn btn-info" type="button" name="SelectRotate" id="mapMkrBtnRotate">
-                      <i  class="material-icons">rotate_right</i>
-                    </button>
-          <button class="btn btn-info" type="button" name="SelectDel" id="mapMkrBtnDel">
-                      <i  class="material-icons">delete</i>
-                    </button>
-
-
+          <button id="mapMkrBtnHand" class="btn btn-primary mapMkrTbBtn" type="button" name="Select">Select</button>
+          <button id="mapMkrBtnRotate" class="btn btn-info" type="button" name="SelectRotate" >
+            <i  class="material-icons">rotate_right</i>
+          </button>
+          <button id="mapMkrBtnDel" class="btn btn-info" type="button" name="SelectDel" >
+            <i  class="material-icons">delete</i>
+          </button>
         </div>
         <hr />
-        <div class="row" id="mapMkrFloor">
-          <button id="mapMkrBtnFlr" class="col-sm-9 btn btn-primary mapMkrTbBtn" type="button" name="Floors">Floors</button>
-          <button id="FlrVis" class=" btn btn-info vis" type="button" name="FloorVis-0">
-                      <i id="FlrVisOn" class="material-icons">visibility</i>
-                      <i id="FlrVisOff" class="material-icons iconOff hide">visibility_off</i>
-                    </button>
+        <div class="btn-group" id="mapMkrFloor">
+          <button id="mapMkrBtnFlr" class="btn btn-primary mapMkrTbBtn" type="button" name="Floors">Floors</button>
+          <button id="FlrVis" class="btn btn-info vis" type="button" name="FloorVis-0">
+            <i id="FlrVisOn" class="material-icons">visibility</i>
+            <i id="FlrVisOff" class="material-icons iconOff hide">visibility_off</i>
+          </button>
         </div>
-        <div class="row" id="mapMkrWall">
-          <button id="mapMkrBtnWall" class="col-sm-9 btn btn-primary mapMkrTbBtn" type="button" name="Walls">Walls</button>
-          <button id="WalVis" class=" btn btn-info vis" type="button" name="WallVis-1">
-                      <i id="WalVisOn" class="material-icons">visibility</i>
-                      <i id="WalVisOff" class="material-icons iconOff hide">visibility_off</i>
-                    </button>
+        <div class="btn-group" id="mapMkrWall">
+          <button id="mapMkrBtnWall" class=" btn btn-primary mapMkrTbBtn" type="button" name="Walls">Walls</button>
+          <button id="WalVis" class="btn btn-info vis" type="button" name="WallVis-1">
+            <i id="WalVisOn" class="material-icons">visibility</i>
+            <i id="WalVisOff" class="material-icons iconOff hide">visibility_off</i>
+          </button>
         </div>
-        <div class="row" id="mapMkrObjects">
-          <button id="mapMkrBtnObj" class="col-sm-9 btn btn-primary mapMkrTbBtn" type="button" name="Objects">Objects</button>
+        <div class="btn-group" id="mapMkrObjects">
+          <button id="mapMkrBtnObj" class=" btn btn-primary mapMkrTbBtn" type="button" name="Objects">Objects</button>
           <button id="ObjVis" class=" btn btn-info vis" type="button" name="ObjectVis-2">
-                      <i id="ObjVisOn" class="material-icons">visibility</i>
-                      <i id="ObjVisOff" class="material-icons iconOff hide">visibility_off</i>
-                    </button>
+            <i id="ObjVisOn" class="material-icons">visibility</i>
+            <i id="ObjVisOff" class="material-icons iconOff hide">visibility_off</i>
+          </button>
         </div>
-        <div class="row" id="mapMkrGrid">
-          <button id="mapMkrBtnGrd" class="col-sm-9 btn btn-primary mapMkrTbBtn" type="button" name="Grid" disabled>Grid</button>
+        <hr />
+        <div class="btn-group" id="mapMkrGrid">
+          <button id="mapMkrBtnGrd" class=" btn btn-primary mapMkrTbBtn" type="button" name="Grid" disabled>Grid</button>
           <button id="GrdVis" class=" btn btn-info vis" type="button" name="GridVis-3">
-                      <i id="GrdVisOn" class="material-icons">visibility</i>
-                      <i id="GrdVisOff" class="material-icons iconOff hide">visibility_off</i>
-                    </button>
+            <i id="GrdVisOn" class="material-icons">visibility</i>
+            <i id="GrdVisOff" class="material-icons iconOff hide">visibility_off</i>
+          </button>
         </div>
-
       </div>
       <!--toolbox end-->
 
       <!-- Canvas -->
-      <div class="col-lg-9">
+      <div class="col-lg-10">
         <div id="mainCanvas">
         </div>
       </div>
@@ -138,8 +134,8 @@ and open the template in the editor.
 
   <div id="mapMkrCellImages">
     <button class="btn btn-danger" type="button" name="selectCellImgX" id="mapMkrBtnSelCellImgX">
-                      <i  class="material-icons">cancel</i>
-                    </button>
+      <i  class="material-icons">cancel</i>
+    </button>
     <div id="mapMkrCellImagesContent">
 
     </div>
