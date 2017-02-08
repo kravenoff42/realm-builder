@@ -39,7 +39,7 @@ var canvasY = (gridY * cellSize) + (cellBorderSize * (gridY + 1));
 // Its a pain to deal with single and double clicks
 // More research can be done on this topic
 //
-var mouseClicks = 0;st
+var mouseClicks = 0;
 
 /**
  * Load Content - p5.js function
@@ -219,46 +219,37 @@ function buildCollByLayer(layer) {
           var tempDivEle = document.createElement('div');
           tempDivEle.classList.add('tile-item');
           tempDivEle.classList.add('col-md-2');
-          
 
-            // var tempCardEle = document.createElement('div');
-            // tempCardEle.classList.add('item-inner');
-            // //create img
-            // var tempImgEle = document.createElement('img');
-            // //tempImgEle.classList.add('card-img-top');
-            // tempImgEle.classList.add('mapMkrColItem');
-            // tempImgEle.height = SIZE_PX;
-            // tempImgEle.width = SIZE_PX;
-            // tempImgEle.id = 'imgIdx-' + x;
-            // tempImgEle.setAttribute('title', imgData.coll[x].name);
+            var tempCardEle = document.createElement('div');
+            tempCardEle.classList.add('item-inner');
+            //create img
+            var tempImgEle = document.createElement('img');
+            //tempImgEle.classList.add('card-img-top');
+            tempImgEle.classList.add('mapMkrColItem');
+            tempImgEle.height = SIZE_PX;
+            tempImgEle.width = SIZE_PX;
+            tempImgEle.id = 'imgIdx-' + x;
+            tempImgEle.setAttribute('title', imgData.coll[x].name);
             //insert img src
             window.gridGraph.image(window.imgArr[imgData.coll[x].src],
                 0, 0,
                 SIZE_PX, SIZE_PX,
                 imgData.coll[x].x, imgData.coll[x].y,
                 imgData.coll[x].width, imgData.coll[x].height);
-            //tempImgEle.src = window.gridGraph.elt.toDataURL();
-          var imgSrc = "background: url('img/stage00.png') no repeat "+ -imgData.coll[x].x +"px "+ -imgData.coll[x].y +"px";
-          console.log(imgSrc);
-          tempDivEle.setAttribute('style',imgSrc);
-          tempDivEle.width = SIZE_PX;
-          tempDivEle.height = SIZE_PX;
-          tempDivEle.addEventListener('click', collItemSelected);
-            // //add event
-            // tempImgEle.addEventListener('click', collItemSelected);
+            tempImgEle.src = window.gridGraph.elt.toDataURL();
+            //add event
+            tempImgEle.addEventListener('click', collItemSelected);
             //create label
             var tempLblEle = document.createElement('h5');
             //tempLblEle.classList.add('card-title');
             var lblText = imgData.coll[x].name;
             //console.log(lblText);
             tempLblEle.innerHTML = lblText;
-            // //insert img and label into div
-            // tempCardEle.appendChild(tempImgEle);
-            // tempCardEle.appendChild(tempLblEle);
-            // tempDivEle.appendChild(tempCardEle);
-            
-            tempDivEle.appendChild(tempLblEle);
-            
+            //insert img and label into div
+            tempCardEle.appendChild(tempImgEle);
+            tempCardEle.appendChild(tempLblEle);
+            tempDivEle.appendChild(tempCardEle);
+
             //add each div to collection
             collectionArea.appendChild(tempDivEle);
             window.gridGraph.clear();
