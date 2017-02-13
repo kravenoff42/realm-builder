@@ -29,7 +29,11 @@ canvas {
 }
 
 .mapMkrTbBtn{
-  display: block;
+  width: 172px;
+}
+
+#mapMkrBtnHand{
+  width: 122px;
 }
 
 #mapMkrSelImg{
