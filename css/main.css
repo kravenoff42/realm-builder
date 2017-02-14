@@ -6,16 +6,21 @@ Gunmetal - #1d1e2c*/
 
 body{
   background-color: #1d1e2c;
+  overflow:hidden;
 }
 
 #mainCanvas{
-  padding-left: 15px;
+  position:absolute;
+  padding: 16px;
+  height: 90vh;
+  width: 90vw;
+  background-color: #000;
 }
 
 canvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  /* top: 0; */
+  /* left: 0; */
   z-index:0;
 }
 
@@ -24,7 +29,7 @@ canvas {
 }
 
 #mapMkrCol{
-  background-color: #bfdbf7;
+  background-color: #477998;
   padding: 16px 0 0 16px;
 }
 
@@ -48,7 +53,7 @@ canvas {
 
 #mapMkrSelImgPnl{
   text-align: center;
-  background-color: #bfdbf7;
+  background-color: #477998;
   margin-bottom: 16px;
 }
 
