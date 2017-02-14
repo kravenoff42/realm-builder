@@ -21,11 +21,13 @@ canvas {
 
 #mapMkrCol{
   background-color: #bfdbf7;
+  padding: 16px 0 0 16px;
 }
 
 .mapMkrColItem{
     margin: 10px;
     cursor: pointer;
+    height: 160px;
 }
 
 .mapMkrTbBtn{
@@ -38,24 +40,25 @@ canvas {
 
 #mapMkrSelImg{
   height: 128px;
-  margin: 16px;
+  margin: 20px;
 }
 
 #mapMkrSelImgPnl{
   text-align: center;
   background-color: #bfdbf7;
+  margin-bottom: 16px;
 }
 
 .hoverPointer:hover{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .mapMkrHide{
-display: none;
+  display: none;
 }
 
 .mapMkrShow{
-    display: block;
+  display: block;
 }
 
 i.material-icons{
@@ -68,29 +71,38 @@ i.material-icons{
 .tile-item {
   display: inline-block;
   padding: 0;
-  margin: 0;
+  margin: 0 16px 16px 0;
+  height: 60px;
+  width: 60px;
 }
 .tile-item .item-inner {
-  background: #e1e5f2;
-  border: 1px solid #bfdbf7;
-  padding: 10px 10px 0;
-  margin: 0 20px 20px 0;
+  display: inline-block;
+  background: black;
+  height: 60px;
+  margin-right: 8px;
   position: relative;
 }
 .tile-item img {
-text-align: center;
+  position: absolute;
+  background: black;
+  opacity: 0.75;
+  height: 60px;
+  width: 60px;
 }
+.tile-item img:hover {
+  opacity: 0.85;
+}
+
 .tile-item h5 {
-  background: #e1e5f2;
-  margin: 0;
-  padding: 10px 0;
-  font-weight: 700;
+  padding: 8px 0 0 8px;
   font-size: 14px;
-  color: #2c3e50;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  color: #fff;
+  position: relative;
+  width: 60px;
+  margin: 0;
+  float: left;
 }
+
 @media print {
   .noPrint {
     display: none;
