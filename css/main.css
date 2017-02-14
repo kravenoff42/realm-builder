@@ -56,7 +56,22 @@ canvas {
   background-color: #477998;
   margin-bottom: 16px;
 }
-
+#gridMenu{
+  display: block;
+  visibility: visible;
+  height: 300px;
+  background-color: pink;
+  top: 0;
+  transition: top 500ms ease-in-out;
+}
+#gridMenu:hover{
+  display: none;
+  visibility: hidden;
+  top: -500;
+}
+#gridMenu{
+  
+}
 .hoverPointer:hover{
   cursor: pointer;
 }
