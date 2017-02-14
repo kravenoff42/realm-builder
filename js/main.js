@@ -220,7 +220,7 @@ function buildCollByLayer(layer) {
           tempDivEle.classList.add('tile-item');
         //   tempDivEle.classList.add('col-md-2');
 
-            var tempCardEle = document.createElement('div');
+            var tempCardEle = document.createElement('span');
             tempCardEle.classList.add('item-inner');
             //create img
             var tempImgEle = document.createElement('img');
