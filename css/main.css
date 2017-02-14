@@ -66,6 +66,7 @@ i.material-icons{
   visibility: hidden;
 }
 .tile-item {
+  display: inline-block;
   padding: 0;
   margin: 0;
 }
