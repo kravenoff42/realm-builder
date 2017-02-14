@@ -216,7 +216,7 @@ function buildCollByLayer(layer) {
     for (var x = 0; x < imgData.coll.length; x++) {
         if (imgData.coll[x].layer === layer) {
           //cretae div
-          var tempDivEle = document.createElement('div');
+          var tempDivEle = document.createElement('span');
           tempDivEle.classList.add('tile-item');
         //   tempDivEle.classList.add('col-md-2');
 
