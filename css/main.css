@@ -69,9 +69,15 @@ canvas {
   visibility: hidden;
   top: -500;
 }
-#gridMenu{
-  
+#gridMenu td{
+  border-color: black;
+  margin-left: 4px;
+  margin-bottom: 4px;
 }
+#gridMenu td:hover{
+  background-color: red;
+}
+
 .hoverPointer:hover{
   cursor: pointer;
 }
