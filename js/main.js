@@ -118,6 +118,10 @@ function setup() {
 
     var eraseBtn = document.querySelector('#mapMkrBtnErs');
     eraseBtn.addEventListener('click', selectEraser);
+    
+    var gridBtn = document.querySelector('#mapMkrBtnGrd');
+    gridBtn.addEventListener('click', toggleGridMenu);
+    
 
     window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
@@ -763,4 +767,14 @@ function selectEraser(){
     document.body.style.cursor = 'auto';
     erasing = false;
   }
+}
+
+function toggleGridMenu(){
+    var gridMenu = document.querySelector('#gridMenu');
+    var shown = gridMenu.classList.contains('show');
+    if(shown){
+        gridMenu.classList.remove('show');
+    } else {
+        gridMenu.classList.add('show');
+    }
 }

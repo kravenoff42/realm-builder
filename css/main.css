@@ -64,7 +64,7 @@ canvas {
   top: 0;
   transition: top 500ms ease-in-out;
 }
-#gridMenu:hover{
+#gridMenu .show{
   display: none;
   visibility: hidden;
   top: -500;
