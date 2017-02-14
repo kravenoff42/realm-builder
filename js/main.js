@@ -218,7 +218,7 @@ function buildCollByLayer(layer) {
           //cretae div
           var tempDivEle = document.createElement('div');
           tempDivEle.classList.add('tile-item');
-          tempDivEle.classList.add('col-md-2');
+        //   tempDivEle.classList.add('col-md-2');
 
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');

@@ -29,11 +29,11 @@ canvas {
 }
 
 .mapMkrTbBtn{
-  width: 75%;
+  width: 100px;
 }
 
 #mapMkrBtnHand{
-  width: 50%;
+  width: 80px;
 }
 
 #mapMkrSelImg{
