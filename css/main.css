@@ -70,6 +70,8 @@ canvas {
   top: -500;
 }
 #gridMenu td{
+  height: 8px;
+  width: 8px;
   border: 2px solid black;
   margin-left: 4px;
   margin-bottom: 4px;
