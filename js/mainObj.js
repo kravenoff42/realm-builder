@@ -21,13 +21,13 @@ function MainObj(pos, width, height, angle, src, bounds) {
     this.heading = angle || 0;
     this.src = src || null;
     this.layerVis = [true, true, true];
+    this.dots = [];
     //
     // Used for the cell didn't want to create a separate class to inherit from this one
     //
     this.layers = [];
+    this.rotation = radians(90);
 }
-
-MainObj.prototype.rotation = 90;
 
 MainObj.prototype.setRotation = function (angle) {
     this.rotation = angle;
@@ -38,7 +38,7 @@ MainObj.prototype.setHeading = function(angle) {
 }
 
 MainObj.prototype.turn = function () {
-    this.heading += radians(this.rotation);
+    this.heading += this.rotation;
     if (this.heading > radians(270)) {
         this.heading = 0;
     }
