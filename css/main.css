@@ -177,3 +177,12 @@ i.material-icons{
     margin: 10px;
     border-radius: 10px;
 }
+
+#toolCanvas{
+    position: absolute;
+}
+
+#toolCanvas{
+    cursor:pointer;
+}
+
