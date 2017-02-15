@@ -117,13 +117,18 @@ i.material-icons{
 }
 .tile-item img {
   position: absolute;
-  background: black;
   opacity: 0.7;
   height: 60px;
   width: 60px;
 }
 .tile-item img:hover {
   opacity: 1;
+}
+
+img[id*='imgIdx-']{
+  background-image: url('img/stage00.png');
+  background-repeat: no-repeat;
+  background-size: 64px 64px;
 }
 
 .tile-item h5 {
