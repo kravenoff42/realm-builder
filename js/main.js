@@ -8,7 +8,6 @@ var gridPointsArr = [];
 var gridTree;
 var currentCell = null;
 var currentSelectImg = null;
-var drawing = false;
 var pixelArr;
 var cellImagesWrap;
 
@@ -28,12 +27,30 @@ const SIZE_PX = 64;
 var GRID_LINE_W = 2;
 var gridX = 15;
 var gridY = 10;
-var gridSize = { x: gridX, y: gridY };
+var gridSize = {
+    x: gridX,
+    y: gridY
+};
 var gridVis = true;
 var cellSize = SIZE_PX;
 var cellBorderSize = GRID_LINE_W;
 var canvasX = (gridX * cellSize) + (cellBorderSize * (gridX + 1));
 var canvasY = (gridY * cellSize) + (cellBorderSize * (gridY + 1));
+
+//
+// Rotate Tool Handle
+//
+var rotateToolHandle;
+var rotateToolHeading;
+var toolGrabbed = false;
+
+
+//
+// Features
+//
+var drawing = false;
+var rotateTool = false;
+var handTool = false;
 
 //
 // Its a pain to deal with single and double clicks
@@ -118,14 +135,19 @@ function setup() {
 
     var eraseBtn = document.querySelector('#mapMkrBtnErs');
     eraseBtn.addEventListener('click', selectEraser);
-    
+
     var gridBtn = document.querySelector('#mapMkrBtnGrd');
     gridBtn.addEventListener('click', toggleGridMenu);
-    
 
-    window.gridTree = new QuadTree({ x: 0, y: 0, width: window.mainCanvas.width, height: window.mainCanvas.height }, false, 7);
 
-        // This is the Grid Canvas that will sit on top
+    window.gridTree = new QuadTree({
+        x: 0,
+        y: 0,
+        width: window.mainCanvas.width,
+        height: window.mainCanvas.height
+    }, false, 7);
+
+    // This is the Grid Canvas that will sit on top
 
     window.gridCanvas = document.createElement('canvas');
     window.gridCanvas.id = 'gridCanvas';
@@ -161,12 +183,122 @@ function setup() {
     //
     window.cellImagesWrap = document.querySelector('#mapMkrCellImages');
 
-    document.querySelector('#mapMkrBtnSelCellImgX').addEventListener('click', function () {
+    document.querySelector('#mapMkrBtnSelCellImgX').addEventListener('click', function() {
         window.mainCanvas.elt.style.opacity = 1;
         window.gridCanvas.style.opacity = 1;
         window.cellImagesWrap.style.display = 'none';
         document.querySelector('#mapMkrCellImagesContent').innerHTML = '';
     });
+
+
+    //
+    // Currently just used for the rotate tool.
+    // This could also be done with css transform translate and transform rotate and possibly transform-origin
+    //
+    // The height and width could just be the size of the cells * x for now just have it hardcoded.
+    //
+    window.toolCanvas = document.createElement('canvas');
+    window.toolCanvas.id = 'toolCanvas';
+    window.toolCanvas.classList.add('mapMkrHide');
+    window.toolCanvas.height = 250;
+    window.toolCanvas.width = 250;
+    window.toolCtx = window.toolCanvas.getContext('2d');
+    document.body.appendChild(window.toolCanvas);
+
+    rotateToolHeading = radians(0);
+
+    window.toolCanvas.addEventListener('mousedown', function() {
+        var toolCanvBnds = window.toolCanvas.getBoundingClientRect();
+
+        //
+        // Mouse position based on the tool canvas
+        //
+        var mousePos = {
+            x: (winMouseX - toolCanvBnds.left),
+            y: (winMouseY - toolCanvBnds.top)
+        };
+
+        //
+        // Create box with boundaries around the tool handle (Circle)
+        //
+        var topLeft = {
+            x: rotateToolHandle.x - 10,
+            y: rotateToolHandle.y - 10
+        };
+        var topRight = {
+            x: rotateToolHandle.x + 10,
+            y: rotateToolHandle.y - 10
+        };
+        var bottomLeft = {
+            x: rotateToolHandle.x - 10,
+            y: rotateToolHandle.y + 10
+        };
+        var bottomRight = {
+            x: rotateToolHandle.x + 10,
+            y: rotateToolHandle.y + 10
+        };
+
+
+        //
+        // Center mouse click
+        //
+        mousePos = {
+            x: mousePos.x - window.toolCanvas.width / 2,
+            y: mousePos.y - window.toolCanvas.height / 2
+        };
+
+        console.log(mousePos);
+        if (mousePos.x < topLeft.x + 30 &&
+            mousePos.x > topLeft.x &&
+            mousePos.y < topLeft.y + 30 &&
+            mousePos.y > topLeft.y) {
+            toolGrabbed = true;
+        }
+    });
+
+    window.toolCanvas.addEventListener('mouseup', function() {
+        if (toolGrabbed) {
+            toolGrabbed = false;
+            var tempDeg = degrees(rotateToolHeading);
+            if (tempDeg > 270) {
+                if ((tempDeg - 270) > 45) {
+                    rotateToolHeading = 0;
+                }
+                else {
+                    rotateToolHeading = radians(270);
+                }
+            }
+            else if (tempDeg > 180) {
+                if ((tempDeg - 180) > 45) {
+                    rotateToolHeading = radians(270);
+                }
+                else {
+                    rotateToolHeading = radians(180);
+                }
+            }
+            else if (tempDeg > 90) {
+                if ((tempDeg - 90) > 45) {
+                    rotateToolHeading = radians(180);
+                }
+                else {
+                    rotateToolHeading = radians(90);
+                }
+            }
+            else {
+                if (tempDeg > 45) {
+                    rotateToolHeading = radians(90);
+                }
+                else {
+                    rotateToolHeading = radians(0);
+                }
+            }
+            rotateToolHandle.x = 82 * Math.cos(rotateToolHeading);
+            rotateToolHandle.y = 82 * Math.sin(rotateToolHeading);
+            window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
+        }
+    });
+
+
 
 }
 
@@ -219,10 +351,10 @@ function buildCollByLayer(layer) {
     window.gridGraph.resizeCanvas(SIZE_PX, SIZE_PX);
     for (var x = 0; x < imgData.coll.length; x++) {
         if (imgData.coll[x].layer === layer) {
-          //cretae div
-          var tempDivEle = document.createElement('div');
-          tempDivEle.classList.add('tile-item');
-        //   tempDivEle.classList.add('col-md-2');
+            //cretae div
+            var tempDivEle = document.createElement('div');
+            tempDivEle.classList.add('tile-item');
+            //   tempDivEle.classList.add('col-md-2');
 
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');
@@ -263,7 +395,7 @@ function buildCollByLayer(layer) {
 }
 
 function setDefault() {
-  buildCollByLayer(0);
+    buildCollByLayer(0);
 
     window.gridGraph.resizeCanvas(SIZE_PX * 2, SIZE_PX * 2);
     window.currentSelectImg = 0;
@@ -310,7 +442,7 @@ function cellItemSelected() {
 /**
  * This is the main loop - p5.js function
  * @function draw
-*/
+ */
 function draw() {
     update();
     render();
@@ -329,6 +461,63 @@ function update() {
     }
     if (!mouseIsPressed) {
         drawing = false;
+    }
+
+    if (window.rotateTool) {
+        var tempCurrentCell = window.gridCells.getCurrentCell();
+        var tempCurrentImg = window.gridCells.getCurrentImage();
+        window.toolCtx.clearRect(0, 0, window.toolCanvas.width, window.toolCanvas.height);
+
+        window.gridGraph.push();
+        window.gridGraph.translate(window.toolCanvas.width / 2, window.toolCanvas.height / 2);
+        window.gridGraph.rotate(rotateToolHeading);
+        var rightMiddle = {
+            x: (tempCurrentCell.width / 2),
+            y: 0
+        };
+        window.gridGraph.stroke('rgb(0,255,0)');
+        window.gridGraph.strokeWeight(6);
+        window.gridGraph.line(rightMiddle.x + 6, 0, rightMiddle.x + 50, 0);
+        window.gridGraph.ellipse(rightMiddle.x + 50, 0, 20);
+        window.gridGraph.pop();
+        window.toolCtx.drawImage(window.gridGraph.elt, 0, 0);
+        window.toolCanvas.classList.remove('mapMkrHide');
+
+        window.gridGraph.clear();
+
+    }
+
+    if (toolGrabbed) {
+        var toolCanvBnds = window.toolCanvas.getBoundingClientRect();
+
+        //
+        // Mouse position based on the tool canvas
+        //
+        var mousePos = {
+            x: (winMouseX - toolCanvBnds.left),
+            y: (winMouseY - toolCanvBnds.top)
+        };
+
+        //
+        // Center mouse click
+        //
+        mousePos = {
+            x: mousePos.x - window.toolCanvas.width / 2,
+            y: mousePos.y - window.toolCanvas.height / 2
+        };
+
+        var a = Math.atan2(mousePos.y, mousePos.x);
+
+        rotateToolHeading = (a > 0 ? a : (2 * PI + a));
+        window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
+        //rotateToolHandle.x = rotateToolHandle.x * Math.cos(a) - rotateToolHandle.y * Math.sin(a);
+        //rotateToolHandle.y = rotateToolHandle.x * Math.sin(a) + rotateToolHandle.y * Math.cos(a);
+        rotateToolHandle.x = 82 * Math.cos(rotateToolHeading);
+        rotateToolHandle.y = 82 * Math.sin(rotateToolHeading);
+
+        //console.log('angle: ' + a);
+        console.log('rotateX: ' + rotateToolHandle.x + ' rotateY: ' + rotateToolHandle.y);
+
     }
 }
 
@@ -350,7 +539,10 @@ function render() {
  */
 
 function grid(size) {
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     //
     // Draw horizontal lines as we go down the screen
     push();
@@ -378,13 +570,19 @@ function grid(size) {
 
 function createGridPoints(size) {
     window.gridPointsArr = [];
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     var center = 0;
     cord.x = GRID_LINE_W;
     cord.y = GRID_LINE_W;
     for (var y = 0; y < size.y; y++) {
         for (var x = 0; x < size.x; x++) {
-            window.gridPointsArr.push(new MainObj({ x: cord.x, y: cord.y }, SIZE_PX, SIZE_PX));
+            window.gridPointsArr.push(new MainObj({
+                x: cord.x,
+                y: cord.y
+            }, SIZE_PX, SIZE_PX));
             cord.x += SIZE_PX + GRID_LINE_W;
 
         }
@@ -402,7 +600,10 @@ function createGridPoints(size) {
  */
 function mousePressed() {
 
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     cord.x = window.mouseX;
     cord.y = window.mouseY;
     cord.width = 2;
@@ -415,40 +616,40 @@ function mousePressed() {
         cord.y < 0 + height &&
         cord.y > 0) {
 
-/******************************************************************************
-Hey whats up with this? should there be something here?
+        /******************************************************************************
+        Hey whats up with this? should there be something here?
 
-this is what I have in my copy.\
+        this is what I have in my copy.\
 
-window.gridTree.insert(cord);
-findCell(cord);
-console.log("pressed");
-//gridTreeReset();
-if (window.gridCells.currentCell !== null) {
+        window.gridTree.insert(cord);
+        findCell(cord);
+        console.log("pressed");
+        //gridTreeReset();
+        if (window.gridCells.currentCell !== null) {
 
-    if (window.handTool) {
-        window.gridCells.findImgByCord(cord);
-        if (window.gridCells.currentLayer !== null) {
-            cellItemSelected();
-        } else {
-            rotateBtn.disabled = true;
-            deleteBtn.disabled = true;
+            if (window.handTool) {
+                window.gridCells.findImgByCord(cord);
+                if (window.gridCells.currentLayer !== null) {
+                    cellItemSelected();
+                } else {
+                    rotateBtn.disabled = true;
+                    deleteBtn.disabled = true;
+                }
+            }
+            else if (window.currentSelectImg !== null) {
+                if(!erasing){drawing = true;}
+                var selectImg = imgData.coll[window.currentSelectImg];
+                window.gridCells.updateCurrentCellImg(selectImg);
+            }
         }
-    }
-    else if (window.currentSelectImg !== null) {
-        if(!erasing){drawing = true;}
-        var selectImg = imgData.coll[window.currentSelectImg];
-        window.gridCells.updateCurrentCellImg(selectImg);
-    }
-}
-******************************************************************************/
+        ******************************************************************************/
     }
 }
 
 
 /**
  *
-*/
+ */
 function canvasClicked(e) {
     //
     // Code to handle single and double mouse clicks
@@ -456,10 +657,11 @@ function canvasClicked(e) {
     var that = this;
     window.mouseClicks++;
     if (window.mouseClicks == 1) {
-        setTimeout(function () {
+        setTimeout(function() {
             if (window.mouseClicks == 1) {
                 canvasSingleMouseClick.call(this, e);
-            } else {
+            }
+            else {
                 displaySelectedCellImages.call(this, e);
             }
             window.mouseClicks = 0;
@@ -470,7 +672,10 @@ function canvasClicked(e) {
 
 function canvasSingleMouseClick() {
     // console.log('canvasClicked');
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     cord.x = window.mouseX;
     cord.y = window.mouseY;
     cord.width = 2;
@@ -484,11 +689,13 @@ function canvasSingleMouseClick() {
             window.gridCells.findImgByCord(cord);
             if (window.gridCells.currentLayer !== null) {
                 cellItemSelected();
-            } else {
+            }
+            else {
                 rotateBtn.disabled = true;
                 deleteBtn.disabled = true;
             }
-        } else if (imgData.currentImg !== null) {
+        }
+        else if (imgData.currentImg !== null) {
             drawing = true;
             var selectImg = imgData.getCurrentImg();
             window.gridCells.updateCurrentCellImg(selectImg);
@@ -501,10 +708,53 @@ function dvDouble() {
 }
 
 function mouseReleased() {
-/*
-drawing = false;
-gridTreeReset();
-*/
+    /*
+    drawing = false;
+    gridTreeReset();
+    */
+
+    //
+    // 
+    //
+    if (toolGrabbed) {
+        toolGrabbed = false;
+        var tempDeg = degrees(rotateToolHeading);
+        if (tempDeg > 270) {
+            if ((tempDeg - 270) > 45) {
+                rotateToolHeading = 0;
+            }
+            else {
+                rotateToolHeading = radians(270);
+            }
+        }
+        else if (tempDeg > 180) {
+            if ((tempDeg - 180) > 45) {
+                rotateToolHeading = radians(270);
+            }
+            else {
+                rotateToolHeading = radians(180);
+            }
+        }
+        else if (tempDeg > 90) {
+            if ((tempDeg - 90) > 45) {
+                rotateToolHeading = radians(180);
+            }
+            else {
+                rotateToolHeading = radians(90);
+            }
+        }
+        else {
+            if (tempDeg > 45) {
+                rotateToolHeading = radians(90);
+            }
+            else {
+                rotateToolHeading = radians(0);
+            }
+        }
+        rotateToolHandle.x = 82 * Math.cos(rotateToolHeading);
+        rotateToolHandle.y = 82 * Math.sin(rotateToolHeading);
+        window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
+    }
 }
 
 function canvasMouseReleased() {
@@ -568,11 +818,13 @@ function toggleVis() {
             createGridPoints(gridSize);
             window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
             window.gridCells.updateCellsCords(gridX);
-        } else {
+        }
+        else {
             window.gridCells.setLayerVis(layer, true);
 
         }
-    } else {
+    }
+    else {
         iconOff.classList.remove("hide");
         iconOn.classList.add("hide");
         if (layer == 3) {
@@ -581,7 +833,8 @@ function toggleVis() {
             createGridPoints(gridSize);
             window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
             window.gridCells.updateCellsCords(gridX);
-        } else {
+        }
+        else {
             window.gridCells.setLayerVis(layer, false);
         }
     }
@@ -591,7 +844,10 @@ function toggleVis() {
  * @function updateCells
  */
 function updateCells() {
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     cord.x = window.mouseX;
     cord.y = window.mouseY;
     cord.width = 2;
@@ -606,8 +862,12 @@ function updateCells() {
         }
     }
 }
+
 function eraseCells() {
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     cord.x = window.mouseX;
     cord.y = window.mouseY;
     cord.width = 2;
@@ -617,7 +877,7 @@ function eraseCells() {
     gridTreeReset();
     if (window.gridCells.currentCell !== null) {
         if (window.currentSelectImg !== null) {
-          //console.log(cord);
+            //console.log(cord);
             window.gridCells.deleteCellImageByLayer();
         }
     }
@@ -627,7 +887,10 @@ function eraseCells() {
  * @function displaySelectedCellImages
  */
 function displaySelectedCellImages() {
-    var cord = { x: 0, y: 0 };
+    var cord = {
+        x: 0,
+        y: 0
+    };
     cord.x = window.mouseX;
     cord.y = window.mouseY;
     cord.width = 2;
@@ -676,7 +939,9 @@ function displaySelectedCellImages() {
                     // If this grows too big it could be put into a function
                     // Click Event for when an image is selected from the cell list of images
                     //
-                    tempItem.addEventListener('click', function () {
+                    tempItem.addEventListener('click', function() {
+
+                        var canvasBounds = window.mainCanvas.elt.getBoundingClientRect();
                         //
                         // Resetting the canvas transparency
                         //
@@ -688,16 +953,55 @@ function displaySelectedCellImages() {
                         document.querySelector('#mapMkrCellImagesContent').innerHTML = '';
 
                         //
-                        //
+                        // 
                         // This is where I'm planning on building the rotate tool
                         //
                         push();
+                        fill(255);
                         var currentCell = window.gridCells.getCurrentCell();
+
+                        //
+                        // This is based on the center position of the actual cell not the image.
+                        // This works because when we draw the image its based on the center of the cell.
+                        // If for any reason we decide that the image are freely placed than this code would have to change.
+                        // mkor if decided lets say to allow more than one image at layer 3 (2 beds).63222   
+                        // 
                         translate(currentCell.x, currentCell.y);
-                        //var topLeft =
+                        var topLeft = {
+                            x: 0 - (currentCell.width / 2),
+                            y: 0 + (currentCell.height / 2)
+                        };
+                        var topRight = {
+                            x: 0 + (currentCell.width / 2),
+                            y: 0 + (currentCell.height / 2)
+                        };
+                        var buttomLeft = {
+                            x: 0 - (currentCell.width / 2),
+                            y: 0 - (currentCell.height / 2)
+                        };
+                        var buttomRight = {
+                            x: 0 + (currentCell.width / 2),
+                            y: 0 - (currentCell.height / 2)
+                        };
+
+                        ellipse(topLeft.x, topLeft.y, 10, 10);
+                        ellipse(topRight.x, topRight.y, 10, 10);
+                        ellipse(buttomLeft.x, buttomLeft.y, 10, 10);
+                        ellipse(buttomRight.x, buttomRight.y, 10, 10);
+
+                        window.gridCells.getCurrentImage().addPoint(topLeft);
+                        window.gridCells.getCurrentImage().addPoint(topRight);
+                        window.gridCells.getCurrentImage().addPoint(buttomLeft);
+                        window.gridCells.getCurrentImage().addPoint(buttomRight);
+
+
+                        window.toolCanvas.style.top = (canvasBounds.top + window.scrollY) + currentCell.y - (window.toolCanvas.height / 2) + 'px';
+                        window.toolCanvas.style.left = (canvasBounds.left + window.scrollX) + currentCell.x - (window.toolCanvas.width / 2) + 'px';
 
                         pop();
-
+                        setupRotateTool();
+                        window.rotateTool = true;
+                        window.drawing = false;
 
                     });
                     tempItem.appendChild(tempImgArr[x]);
@@ -719,12 +1023,32 @@ function displaySelectedCellImages() {
                 exitBtn.style.left = (cord.x + SIZE_PX + 40) + canvasBounds.left + 'px';
                 exitBtn.style.top = (cord.y - SIZE_PX - 30) + canvasBounds.top + 'px';
 
-
             }
         }
 
     }
     gridTreeReset();
+}
+
+function setupRotateTool() {
+    var tempCurrentCell = window.gridCells.getCurrentCell();
+    var tempCurrentImg = window.gridCells.getCurrentImage();
+    window.toolCtx.clearRect(0, 0, window.toolCanvas.width, window.toolCanvas.height);
+
+    window.gridGraph.push();
+    window.gridGraph.translate(window.toolCanvas.width / 2, window.toolCanvas.height / 2);
+    window.gridGraph.rotate(rotateToolHeading);
+    var rightMiddle = { x: (tempCurrentCell.width / 2), y: 0 };
+    window.gridGraph.stroke('rgb(0,255,0)');
+    window.gridGraph.strokeWeight(6);
+    window.gridGraph.line(rightMiddle.x + 6, 0, rightMiddle.x + 50, 0);
+    rotateToolHandle = { x: rightMiddle.x + 50, y: 0 };
+    window.gridGraph.ellipse(rightMiddle.x + 50, 0, 20);
+    window.gridGraph.pop();
+    window.toolCtx.drawImage(window.gridGraph.elt, 0, 0);
+    window.toolCanvas.classList.remove('mapMkrHide');
+
+    window.gridGraph.clear();
 }
 
 
@@ -734,47 +1058,49 @@ function gridTreeReset() {
     window.gridTree.insert(window.gridPointsArr);
 }
 
-function printMap(){
-  window.print();
-  return false;
+function printMap() {
+    window.print();
+    return false;
 }
 
-function saveMap(){
-  var gridVis = document.querySelector("#GrdVisOn");
-    if (gridVis.classList.contains("hide")){
-      save(window.mainCanvas, 'myMap.jpg');
+function saveMap() {
+    var gridVis = document.querySelector("#GrdVisOn");
+    if (gridVis.classList.contains("hide")) {
+        save(window.mainCanvas, 'myMap.jpg');
     }
     else {
-    GRID_LINE_W = 0;
-    createGridPoints(gridSize);
-    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
-    window.gridCells.updateCellsCords(gridX);
-    save(window.mainCanvas, 'myMap.jpg');
-    GRID_LINE_W = 2;
-    createGridPoints(gridSize);
-    window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
-    window.gridCells.updateCellsCords(gridX);
-  }
-  return false;
+        GRID_LINE_W = 0;
+        createGridPoints(gridSize);
+        window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+        window.gridCells.updateCellsCords(gridX);
+        save(window.mainCanvas, 'myMap.jpg');
+        GRID_LINE_W = 2;
+        createGridPoints(gridSize);
+        window.gridCells.update(gridSize, SIZE_PX, GRID_LINE_W);
+        window.gridCells.updateCellsCords(gridX);
+    }
+    return false;
 }
 
-function selectEraser(){
-  if(!erasing){
-    document.body.style.cursor = 'crosshair';
-    erasing = true;
-    drawing = false;
-  } else {
-    document.body.style.cursor = 'auto';
-    erasing = false;
-  }
+function selectEraser() {
+    if (!erasing) {
+        document.body.style.cursor = 'crosshair';
+        erasing = true;
+        drawing = false;
+    }
+    else {
+        document.body.style.cursor = 'auto';
+        erasing = false;
+    }
 }
 
-function toggleGridMenu(){
+function toggleGridMenu() {
     var gridMenu = document.querySelector('#gridMenu');
     var shown = gridMenu.classList.contains('show');
-    if(shown){
+    if (shown) {
         gridMenu.classList.remove('show');
-    } else {
+    }
+    else {
         gridMenu.classList.add('show');
     }
 }
