@@ -359,20 +359,21 @@ function buildCollByLayer(layer) {
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');
             //create img
-            var tempImgEle = document.createElement('img');
+            var tempImgEle = document.createElement('div');
             //tempImgEle.classList.add('card-img-top');
             tempImgEle.classList.add('mapMkrColItem');
             tempImgEle.height = SIZE_PX;
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
-            tempImgEle.setAttribute('title', imgData.coll[x].name);
+            //tempImgEle.setAttribute('title', imgData.coll[x].name);
             //insert img src
-            window.gridGraph.image(window.imgArr[imgData.coll[x].src],
-                0, 0,
-                SIZE_PX, SIZE_PX,
-                imgData.coll[x].x, imgData.coll[x].y,
-                imgData.coll[x].width, imgData.coll[x].height);
-            tempImgEle.src = window.gridGraph.elt.toDataURL();
+            // window.gridGraph.image(window.imgArr[imgData.coll[x].src],
+            //     0, 0,
+            //     SIZE_PX, SIZE_PX,
+            //     imgData.coll[x].x, imgData.coll[x].y,
+            //     imgData.coll[x].width, imgData.coll[x].height);
+            var style = "background: url('img/stage00.png') no-repeat -"+imgData.coll[x].x+" -"+imgData.coll[x].y+";";
+            tempImgEle.style = style;
             //add event
             tempImgEle.addEventListener('click', collItemSelected);
             //create label
@@ -644,6 +645,8 @@ function mousePressed() {
         }
         ******************************************************************************/
     }
+    
+    
 }
 
 
@@ -703,10 +706,6 @@ function canvasSingleMouseClick() {
     }
 }
 
-function dvDouble() {
-    console.log('double');
-}
-
 function mouseReleased() {
     /*
     drawing = false;
@@ -714,7 +713,8 @@ function mouseReleased() {
     */
 
     //
-    // 
+    // Should probably put this function inside a mouse release event for the actual body instead because this
+    // Event is for the main canvas
     //
     if (toolGrabbed) {
         toolGrabbed = false;
