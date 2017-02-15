@@ -33,6 +33,10 @@ MainObj.prototype.setRotation = function (angle) {
     this.rotation = angle;
 }
 
+MainObj.prototype.setHeading = function(angle) {
+    this.heading = angle;
+}
+
 MainObj.prototype.turn = function () {
     this.heading += radians(this.rotation);
     if (this.heading > radians(270)) {
@@ -71,4 +75,8 @@ MainObj.prototype.updatePos = function (pos) {
 
 MainObj.prototype.setLayerVis = function (layer, vis) {
     this.layerVis[layer] = vis;
+}
+
+MainObj.prototype.addPoint = function(dot){
+    this.dots.push(dot);
 }
