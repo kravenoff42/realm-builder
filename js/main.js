@@ -372,7 +372,7 @@ function buildCollByLayer(layer) {
             //     SIZE_PX, SIZE_PX,
             //     imgData.coll[x].x, imgData.coll[x].y,
             //     imgData.coll[x].width, imgData.coll[x].height);
-            var style = "background: url('img/stage00.png') no-repeat -"+imgData.coll[x].x+" -"+imgData.coll[x].y+";";
+            var style = "background: url('img/stage00.png') no-repeat -"+imgData.coll[x].x+"px -"+imgData.coll[x].y+"px;";
             tempImgEle.style = style;
             //add event
             tempImgEle.addEventListener('click', collItemSelected);
