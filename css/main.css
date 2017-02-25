@@ -125,12 +125,6 @@ i.material-icons{
   opacity: 1;
 }
 
-img[id*='imgIdx-']{
-  background-image: url('img/stage00.png');
-  background-repeat: no-repeat;
-  background-size: 64px 64px;
-}
-
 .tile-item h5 {
   padding: 8px 0 0 8px;
   font-size: 14px;

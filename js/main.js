@@ -359,28 +359,28 @@ function buildCollByLayer(layer) {
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');
             //create img
-            var tempImgEle = document.createElement('div');
-            //tempImgEle.classList.add('card-img-top');
+            var tempImgEle = document.createElement('img');
+            tempImgEle.classList.add('card-img-top');
             tempImgEle.classList.add('mapMkrColItem');
             tempImgEle.height = SIZE_PX;
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
-            //tempImgEle.setAttribute('title', imgData.coll[x].name);
+            tempImgEle.setAttribute('title', imgData.coll[x].name);
             //insert img src
-            // window.gridGraph.image(window.imgArr[imgData.coll[x].src],
-            //     0, 0,
-            //     SIZE_PX, SIZE_PX,
-            //     imgData.coll[x].x, imgData.coll[x].y,
-            //     imgData.coll[x].width, imgData.coll[x].height);
-            var style = "background-position: -"+imgData.coll[x].x+"px -"+imgData.coll[x].y+"px;";
-            tempImgEle.style = style;
+            window.gridGraph.image(window.imgArr[imgData.coll[x].src],
+                0, 0,
+                SIZE_PX, SIZE_PX,
+                imgData.coll[x].x, imgData.coll[x].y,
+                imgData.coll[x].width, imgData.coll[x].height);
+            // var style = "background-position: -"+imgData.coll[x].x+"px -"+imgData.coll[x].y+"px;";
+            // tempImgEle.style = style;
             //add event
             tempImgEle.addEventListener('click', collItemSelected);
             //create label
             var tempLblEle = document.createElement('h5');
-            //tempLblEle.classList.add('card-title');
+            tempLblEle.classList.add('card-title');
             var lblText = imgData.coll[x].name;
-            //console.log(lblText);
+            console.log(lblText);
             tempLblEle.innerHTML = lblText;
             //insert img and label into div
             tempCardEle.appendChild(tempImgEle);
