@@ -354,8 +354,7 @@ function buildCollByLayer(layer) {
             //cretae div
             var tempDivEle = document.createElement('div');
             tempDivEle.classList.add('tile-item');
-            //   tempDivEle.classList.add('col-md-2');
-
+            //create inner div
             var tempCardEle = document.createElement('div');
             tempCardEle.classList.add('item-inner');
             //create img
@@ -366,25 +365,32 @@ function buildCollByLayer(layer) {
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
             tempImgEle.setAttribute('title', imgData.coll[x].name);
+            
             //insert img src
             window.gridGraph.image(window.imgArr[imgData.coll[x].src],
                 0, 0,
                 SIZE_PX, SIZE_PX,
                 imgData.coll[x].x, imgData.coll[x].y,
                 imgData.coll[x].width, imgData.coll[x].height);
+            //add url to src attr
+            tempImgEle.src = window.gridGraph.elt.toDataURL();
+            
             // var style = "background-position: -"+imgData.coll[x].x+"px -"+imgData.coll[x].y+"px;";
             // tempImgEle.style = style;
+            
             //add event
             tempImgEle.addEventListener('click', collItemSelected);
             //create label
             var tempLblEle = document.createElement('h5');
             tempLblEle.classList.add('card-title');
             var lblText = imgData.coll[x].name;
-            console.log(lblText);
             tempLblEle.innerHTML = lblText;
-            //insert img and label into div
+            
+            //insert img and label into inner div
             tempCardEle.appendChild(tempImgEle);
             tempCardEle.appendChild(tempLblEle);
+            
+            //add inner div to outer div
             tempDivEle.appendChild(tempCardEle);
 
             //add each div to collection
