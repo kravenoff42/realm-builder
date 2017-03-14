@@ -127,10 +127,9 @@ CellsObj.prototype.getCurrentImageEncode = function () {
  * this function expects currentCell to have a value
  * @method updateCurrentCellImg 
  */
-CellsObj.prototype.updateCurrentCellImg = function (selectedImg) {
+CellsObj.prototype.updateCurrentCellImg = function (selectedImg, imgUrn) {
     this.getCurrentCell().layers[selectedImg.layer] = new MainObj({ x: selectedImg.x, y: selectedImg.y },
-        selectedImg.width, selectedImg.height, 0, selectedImg.src);
-
+        selectedImg.width, selectedImg.height, 0, selectedImg.src, imgUrn);
 }
 
 CellsObj.prototype.findImgByCord = function (cord) {

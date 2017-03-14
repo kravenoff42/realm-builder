@@ -43,6 +43,7 @@ var canvasY = (gridY * cellSize) + (cellBorderSize * (gridY + 1));
 var rotateToolHandle;
 var rotateToolHeading;
 var toolGrabbed = false;
+var toolInit = false;
 
 
 //
@@ -183,7 +184,7 @@ function setup() {
     //
     window.cellImagesWrap = document.querySelector('#mapMkrCellImages');
 
-    document.querySelector('#mapMkrBtnSelCellImgX').addEventListener('click', function() {
+    document.querySelector('#mapMkrBtnSelCellImgX').addEventListener('click', function () {
         window.mainCanvas.elt.style.opacity = 1;
         window.gridCanvas.style.opacity = 1;
         window.cellImagesWrap.style.display = 'none';
@@ -199,6 +200,7 @@ function setup() {
     //
     window.toolCanvas = document.createElement('canvas');
     window.toolCanvas.id = 'toolCanvas';
+    window.toolCanvas.style.display = 'none';
     window.toolCanvas.classList.add('mapMkrHide');
     window.toolCanvas.height = 250;
     window.toolCanvas.width = 250;
@@ -207,7 +209,7 @@ function setup() {
 
     rotateToolHeading = radians(0);
 
-    window.toolCanvas.addEventListener('mousedown', function() {
+    window.toolCanvas.addEventListener('mousedown', function () {
         var toolCanvBnds = window.toolCanvas.getBoundingClientRect();
 
         //
@@ -256,7 +258,7 @@ function setup() {
         }
     });
 
-    window.toolCanvas.addEventListener('mouseup', function() {
+    window.toolCanvas.addEventListener('mouseup', function () {
         if (toolGrabbed) {
             toolGrabbed = false;
             var tempDeg = degrees(rotateToolHeading);
@@ -294,10 +296,57 @@ function setup() {
             }
             rotateToolHandle.x = 82 * Math.cos(rotateToolHeading);
             rotateToolHandle.y = 82 * Math.sin(rotateToolHeading);
+            console.log(rotateToolHeading + ' 1');
             window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
         }
     });
 
+    document.querySelector('body').addEventListener('click', function () {
+
+        if (window.rotateTool) {
+            if (toolInit) {
+                var toolCanvBnds = window.toolCanvas.getBoundingClientRect();
+                console.log('Body Clicked');
+                //
+                // Mouse position based on the tool canvas
+                //
+                var mousePos = {
+                    x: (winMouseX - toolCanvBnds.left),
+                    y: (winMouseY - toolCanvBnds.top)
+                };
+
+
+                var topLeft = {
+                    x: rotateToolHandle.x - 10,
+                    y: rotateToolHandle.y - 10
+                };
+                //
+                // Center mouse click
+                //
+                mousePos = {
+                    x: mousePos.x - window.toolCanvas.width / 2,
+                    y: mousePos.y - window.toolCanvas.height / 2
+                };
+
+                console.log(mousePos);
+                if (mousePos.x < topLeft.x + 30 &&
+                    mousePos.x > topLeft.x &&
+                    mousePos.y < topLeft.y + 30 &&
+                    mousePos.y > topLeft.y) {
+                    console.log('true');
+                } else {
+                    window.toolCanvas.style.display = 'none';
+                    toolGrabbed = false;
+                    rotateToolHeading = radians(0);
+                    window.rotateTool = false;
+                    window.drawing = true;
+                    toolInit = false;
+                }
+            } else {
+                toolInit = true;
+            }
+        }
+    });
 
 
 }
@@ -365,7 +414,7 @@ function buildCollByLayer(layer) {
             tempImgEle.width = SIZE_PX;
             tempImgEle.id = 'imgIdx-' + x;
             tempImgEle.setAttribute('title', imgData.coll[x].name);
-            
+
             //insert img src
             window.gridGraph.image(window.imgArr[imgData.coll[x].src],
                 0, 0,
@@ -374,10 +423,10 @@ function buildCollByLayer(layer) {
                 imgData.coll[x].width, imgData.coll[x].height);
             //add url to src attr
             tempImgEle.src = window.gridGraph.elt.toDataURL();
-            
+
             // var style = "background-position: -"+imgData.coll[x].x+"px -"+imgData.coll[x].y+"px;";
             // tempImgEle.style = style;
-            
+
             //add event
             tempImgEle.addEventListener('click', collItemSelected);
             //create label
@@ -385,11 +434,11 @@ function buildCollByLayer(layer) {
             tempLblEle.classList.add('card-title');
             var lblText = imgData.coll[x].name;
             tempLblEle.innerHTML = lblText;
-            
+
             //insert img and label into inner div
             tempCardEle.appendChild(tempImgEle);
             tempCardEle.appendChild(tempLblEle);
-            
+
             //add inner div to outer div
             tempDivEle.appendChild(tempCardEle);
 
@@ -516,6 +565,7 @@ function update() {
         var a = Math.atan2(mousePos.y, mousePos.x);
 
         rotateToolHeading = (a > 0 ? a : (2 * PI + a));
+        console.log(rotateToolHeading + ' 2');
         window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
         //rotateToolHandle.x = rotateToolHandle.x * Math.cos(a) - rotateToolHandle.y * Math.sin(a);
         //rotateToolHandle.y = rotateToolHandle.x * Math.sin(a) + rotateToolHandle.y * Math.cos(a);
@@ -651,8 +701,8 @@ function mousePressed() {
         }
         ******************************************************************************/
     }
-    
-    
+
+
 }
 
 
@@ -666,7 +716,7 @@ function canvasClicked(e) {
     var that = this;
     window.mouseClicks++;
     if (window.mouseClicks == 1) {
-        setTimeout(function() {
+        setTimeout(function () {
             if (window.mouseClicks == 1) {
                 canvasSingleMouseClick.call(this, e);
             }
@@ -707,7 +757,7 @@ function canvasSingleMouseClick() {
         else if (imgData.currentImg !== null) {
             drawing = true;
             var selectImg = imgData.getCurrentImg();
-            window.gridCells.updateCurrentCellImg(selectImg);
+            window.gridCells.updateCurrentCellImg(selectImg, imgData.currentImg);
         }
     }
 }
@@ -759,6 +809,7 @@ function mouseReleased() {
         }
         rotateToolHandle.x = 82 * Math.cos(rotateToolHeading);
         rotateToolHandle.y = 82 * Math.sin(rotateToolHeading);
+        console.log(rotateToolHeading + ' 3');
         window.gridCells.getCurrentImage().setHeading(rotateToolHeading);
     }
 }
@@ -864,7 +915,7 @@ function updateCells() {
     if (window.gridCells.getCurrentCell()) {
         if (imgData.currentImg !== null) {
             var selectImg = imgData.getCurrentImg();
-            window.gridCells.updateCurrentCellImg(selectImg);
+            window.gridCells.updateCurrentCellImg(selectImg,imgData.currentImg);
         }
     }
 }
@@ -945,7 +996,7 @@ function displaySelectedCellImages() {
                     // If this grows too big it could be put into a function
                     // Click Event for when an image is selected from the cell list of images
                     //
-                    tempItem.addEventListener('click', function() {
+                    tempItem.addEventListener('click', function () {
 
                         var canvasBounds = window.mainCanvas.elt.getBoundingClientRect();
                         //
@@ -955,6 +1006,8 @@ function displaySelectedCellImages() {
                         window.gridCanvas.style.opacity = 1;
                         window.gridCells.currentLayer = this.id.split('-')[1];
                         selectedImg.src = window.gridCells.getCurrentImageEncode();
+                        var tempImg = window.gridCells.getCurrentImage();
+                        imgData.currentImg = tempImg.srcUrn;
                         window.cellImagesWrap.style.display = 'none';
                         document.querySelector('#mapMkrCellImagesContent').innerHTML = '';
 
@@ -1039,6 +1092,7 @@ function displaySelectedCellImages() {
 function setupRotateTool() {
     var tempCurrentCell = window.gridCells.getCurrentCell();
     var tempCurrentImg = window.gridCells.getCurrentImage();
+    window.toolCanvas.style.display = 'block';
     window.toolCtx.clearRect(0, 0, window.toolCanvas.width, window.toolCanvas.height);
 
     window.gridGraph.push();

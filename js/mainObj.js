@@ -4,7 +4,7 @@
  *
  */
 
-function MainObj(pos, width, height, angle, src, bounds) {
+function MainObj(pos, width, height, angle, src, srcUrn, bounds) {
     //
     // This will be the center for images done to facilitate the rotation.
     //
@@ -22,6 +22,7 @@ function MainObj(pos, width, height, angle, src, bounds) {
     this.src = src || null;
     this.layerVis = [true, true, true];
     this.dots = [];
+    this.srcUrn = srcUrn;
     //
     // Used for the cell didn't want to create a separate class to inherit from this one
     //
@@ -33,7 +34,7 @@ MainObj.prototype.setRotation = function (angle) {
     this.rotation = angle;
 }
 
-MainObj.prototype.setHeading = function(angle) {
+MainObj.prototype.setHeading = function (angle) {
     this.heading = angle;
 }
 
@@ -77,6 +78,6 @@ MainObj.prototype.setLayerVis = function (layer, vis) {
     this.layerVis[layer] = vis;
 }
 
-MainObj.prototype.addPoint = function(dot){
+MainObj.prototype.addPoint = function (dot) {
     this.dots.push(dot);
 }
