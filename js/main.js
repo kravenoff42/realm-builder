@@ -25,8 +25,8 @@ var handTool = false;
 var gridSize = 16;
 const SIZE_PX = 64;
 var GRID_LINE_W = 2;
-var gridX = 15;
-var gridY = 10;
+var gridX = 20;
+var gridY = 5;
 var gridSize = {
     x: gridX,
     y: gridY
